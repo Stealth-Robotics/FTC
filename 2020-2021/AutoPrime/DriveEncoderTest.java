@@ -1,5 +1,37 @@
+//----------------------------------------------------------------------------
+//
+//  $Workfile: DriveEncoderTest.java$
+//
+//  $Revision: X$
+//
+//  Project:    FTC 7759 2021
+//
+//                            Copyright (c) 2021
+//                 Cedarcrest High School Team 7759 Auto Prime
+//                            All Rights Reserved
+//
+//  Modification History:
+//  $Log:
+//  $
+//
+//  Note:
+//      This tests the drive motors to ensure everything is good.
+//
+//      When boolean varable armGoingUp is true the arm moves from closed 
+//        to grabbing
+//  
+//      The closed position is known by the limit switch being closed. 
+//  
+//      The grabbing position is known from the encoder count.
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//  Package
+//----------------------------------------------------------------------------
 package org.firstinspires.ftc.teamcode;
 
+//----------------------------------------------------------------------------
+//  Imports
+//----------------------------------------------------------------------------
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -8,81 +40,164 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+//----------------------------------------------------------------------------
+//  Name and type
+//----------------------------------------------------------------------------
 @Autonomous(name="Drive Encoder Test", group="Test")
 
+//----------------------------------------------------------------------------
+// Class Declarations
+//----------------------------------------------------------------------------
+//
+// Class Name: DriveEncoderTest
+//
+// Purpose:
+//   Run the drive motors and make sure they work
+//
+//----------------------------------------------------------------------------
 public class DriveEncoderTest extends OpMode
 {
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    // ----------------------------------------------------------------------------
+    // Class Constants
+    // ----------------------------------------------------------------------------
+    private final double WAIT_TIME     = 4000;
+    private final double POWER_FORWARD = 0.5;
+    private final double POWER_REV     = -0.5;
+    private final double POWER_STOP    = 0.0;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+    // ----------------------------------------------------------------------------
+    // Class Attributes
+    // ----------------------------------------------------------------------------
+    private ElapsedTime mRuntime = new ElapsedTime();
+    private boolean mRunLeft = true;
+    private boolean mRunForward = true;
+    private DcMotor mLeftDrive = null;
+    private DcMotor mRightDrive = null;
+
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Setup the hardware
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        mLeftDrive  = hardwareMap.get(DcMotor.class, "LeftMotor");
+        mLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        mLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "LeftMotor");
-        rightDrive = hardwareMap.get(DcMotor.class, "RightMotor");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
+        mRightDrive = hardwareMap.get(DcMotor.class, "RightMotor");
+        mRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        mRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Reset anything after start is pushed
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void init_loop() {
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Reset anything after start is pushed
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void start() {
-        runtime.reset();
+        mRunLeft = true;
+        mRunForward = true;
+        mRuntime.reset();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Run the robot
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower = 0.5;
-        double rightPower = 0.5;
+        double motorPower = POWER_STOP;
 
-       // leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
+        if(mRuntime.milliseconds() > WAIT_TIME)
+        {
+            mLeftDrive.setPower(POWER_STOP);
+            mRightDrive.setPower(POWER_STOP);
+            mRuntime.reset();
+            
+            if(true == mRunLeft) {
+                mRunLeft = false;
+            }
+            else {
+                mRunLeft = true;
+                if(true == mRunForward) {
+                    mRunForward = false;
+                }
+                else {
+                    mRunForward = true;
+                }
+            }
+        }
 
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        if(true == mRunForward) {
+            motorPower = POWER_FORWARD;
+        }
+        else {
+            motorPower = POWER_REV;
+        }
+
+        if(true == mRunLeft) {
+            mLeftDrive.setPower(motorPower);
+        }
+        else {
+            mRightDrive.setPower(motorPower);
+        }
+
+        if (true == mRunLeft) {
+            if (true == mRunForward) {
+                telemetry.addData("Runing", "Left Forward");
+            } else {
+                telemetry.addData("Runing", "Left Rev");
+            }        
+        } else {
+            if (true == mRunForward) {
+                telemetry.addData("Runing", "Right Forward");
+            } else {
+                telemetry.addData("Runing", "Right Rev");
+            }        
+        }        
+
+        telemetry.addData("Time", "Run Time: " + mRuntime.toString());
         telemetry.addData("Motors", "left (%d), right (%d)", 
-        leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
+        mLeftDrive.getCurrentPosition(), mRightDrive.getCurrentPosition());
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Hit stop
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void stop() {
+        mLeftDrive.setPower(POWER_STOP);
+        mRightDrive.setPower(POWER_STOP);
     }
-
 }

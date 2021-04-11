@@ -1,5 +1,37 @@
+//----------------------------------------------------------------------------
+//
+//  $Workfile: FullArmTest.java$
+//
+//  $Revision: X$
+//
+//  Project:    FTC 7759 2021
+//
+//                            Copyright (c) 2021
+//                 Cedarcrest High School Team 7759 Auto Prime
+//                            All Rights Reserved
+//
+//  Modification History:
+//  $Log:
+//  $
+//
+//  Note:
+//      This moves up arm from closed to grabbing.
+//
+//      When boolean varable armGoingUp is true the arm moves from closed 
+//        to grabbing
+//  
+//      The closed position is known by the limit switch being closed. 
+//  
+//      The grabbing position is known from the encoder count.
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//  Package
+//----------------------------------------------------------------------------
 package org.firstinspires.ftc.teamcode;
 
+//----------------------------------------------------------------------------
+//  Imports
+//----------------------------------------------------------------------------
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,88 +42,135 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+//----------------------------------------------------------------------------
+//  Name and type
+//----------------------------------------------------------------------------
 @Autonomous(name="Full Arm Test", group="Test")
 
+//----------------------------------------------------------------------------
+// Class Declarations
+//----------------------------------------------------------------------------
+//
+// Class Name: FullArmTest
+//
+// Purpose:
+//   Run the arm from closed to grabbed
+//
+//----------------------------------------------------------------------------
 public class FullArmTest extends OpMode
 {
+    // ----------------------------------------------------------------------------
+    // Class Constants
+    // ----------------------------------------------------------------------------
     private final double ARM_SPEED_UP   = -0.3;
     private final double ARM_SPEED_DOWN = 0.3;
     private final double ARM_SPEED_STOP = 0.0;
     private final double ARM_ENCODER_GRAB_POS = -2400;
     
-    private DcMotorEx armDrive = null;
-    private boolean armGoingUp = false;
-    DigitalChannel digitalTouch = null;
+    // ----------------------------------------------------------------------------
+    // Class Attributes
+    // ----------------------------------------------------------------------------
+    private DcMotorEx mArmDrive = null;
+    private boolean mArmGoingUp = false;
+    DigitalChannel mDigitalTouch = null;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Setup the hardware
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void init() {
-        armDrive  = hardwareMap.get(DcMotorEx.class, "ArmMotor");
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "ArmTouch2");
+        mArmDrive  = hardwareMap.get(DcMotorEx.class, "ArmMotor");
+        mDigitalTouch = hardwareMap.get(DigitalChannel.class, "ArmTouch2");
 
-        armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+        mArmDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArmDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mDigitalTouch.setMode(DigitalChannel.Mode.INPUT);
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Reset anything after start is pushed
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void init_loop() {
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Reset anything after start is pushed
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void start() {
+        mArmGoingUp = false;
     }
 
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Run the robot
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void loop() {
         double armPower = ARM_SPEED_STOP;
         
-        if(true == armGoingUp) {
+        if(true == mArmGoingUp) {
             armPower = ARM_SPEED_UP;
         }
         else {
             armPower = ARM_SPEED_DOWN;
         }
         
-        if ((digitalTouch.getState() == false) && (false == armGoingUp)) {
+        if ((mDigitalTouch.getState() == false) && (false == mArmGoingUp)) {
             armPower = ARM_SPEED_STOP;
-            armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            mArmDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            mArmDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             
-            armGoingUp = true;    
+            mArmGoingUp = true;    
         }
         
-        if((armDrive.getCurrentPosition() < ARM_ENCODER_GRAB_POS) && (true == armGoingUp)) {
+        if((mArmDrive.getCurrentPosition() < ARM_ENCODER_GRAB_POS) && (true == mArmGoingUp)) {
             armPower = ARM_SPEED_STOP;
-            armGoingUp = false;
+            mArmGoingUp = false;
         }        
         
-        armDrive.setPower(armPower);
+        mArmDrive.setPower(armPower);
         
-        if (digitalTouch.getState() == true) {
+        if (mDigitalTouch.getState() == true) {
             telemetry.addData("Arm Touch", "Is Not Pressed");
         } else {
             telemetry.addData("Arm Touch", "Is Pressed");
         }        
         
-        telemetry.addData("Motors", "arm (%d)", 
-        armDrive.getCurrentPosition());        
+        telemetry.addData("Motors", "arm (%d)", mArmDrive.getCurrentPosition());
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+    // ----------------------------------------------------------------------------
+    // Purpose:
+    //  Hit stop
+    //
+    // Notes:
+    // None
+    //
+    // ----------------------------------------------------------------------------
     @Override
     public void stop() {
-        armDrive.setPower(ARM_SPEED_STOP);
+        mArmDrive.setPower(ARM_SPEED_STOP);
     }
 
 }
