@@ -10,7 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
  
-@Autonomous(name="Velocity Test2", group="Tests")
+//----------------------------------------------------------------------------
+//  Name and type
+//----------------------------------------------------------------------------
+@Autonomous(name="Velocity Test", group="Test")
 
 public class VelocityTest extends OpMode
 {
@@ -23,9 +26,13 @@ public class VelocityTest extends OpMode
         telemetry.addData("Status", "Initialized");
 
         shooterDrive  = hardwareMap.get(DcMotorEx.class, "ShooterMotor");
-
-        shooterDrive.setDirection(DcMotor.Direction.FORWARD);
         shooterDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterDrive.setDirection(DcMotor.Direction.REVERSE);
+        PIDFCoefficients cof =     shooterDrive.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        cof.p = 60;
+        cof.i = 18;
+        shooterDrive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,cof);
+
         
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -51,7 +58,7 @@ public class VelocityTest extends OpMode
      */
     @Override
     public void loop() {
-        double motorVelocity = 500;
+        double motorVelocity = -1500;
         PIDFCoefficients cof =     shooterDrive.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         shooterDrive.setVelocity(motorVelocity);
 
