@@ -15,14 +15,32 @@
 //  $
 //
 //  Note:
-//      This moves up arm from closed to grabbing.
+//     In the auto program there is a table of them:
+//        private ShooterSettings[] mShooterSettings = {
+//           new ShooterSettings(-1500,100,1500,100,-1520,1500),  //First ring (3 rings full)
+//           new ShooterSettings(-1520,100,1500,100,-1540,1500),  //Second ring (2 rings full)
+//           new ShooterSettings(-1540,100,1500,100,    0,   1)
 //
-//      When boolean varable armGoingUp is true the arm moves from closed 
-//        to grabbing
-//  
-//      The closed position is known by the limit switch being closed. 
-//  
-//      The grabbing position is known from the encoder count.
+//  The first number is how fast the wheel should be spinning to shoot.
+//  the second number is the tolerance of the first number.
+//  So the first ring will shoot at between -1400 and -1600 ticks per second.
+//  if the speed is not reached in 5 tries then it will just fire.
+//  The next two are how long to push out the slider and pull in the slider in ms.  
+//  So it will extend the servo for 1.5 seconds, and then pull it back in for .1 second.  
+//  The reason for the short pull in is that the rest of the shooter state machine will pull it back in.
+//  The next number is how fast we want to shoot the next ring.  
+//  The last number is how long we will let the shooter wheel spin up to it.  
+//  For the first number the shooter will spin up to -1520, and let it take 1.5 seconds to get there.
+//
+//  So the main code has a state machine within a state machine.  
+//  The main state machine is run forward, shoot three, and run more forward.
+//
+//  The shooter state machine will run for the three rings, it is, rev up, shoot our, 
+//  shoot in, speed up, then end.
+//
+//  The main state machine is in the public void loop().  
+//  For shooting there is another function called private void shootThree().
+//
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 //  Package
@@ -33,6 +51,34 @@ package org.firstinspires.ftc.teamcode;
 //  Imports
 //----------------------------------------------------------------------------
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
