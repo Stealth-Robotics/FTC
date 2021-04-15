@@ -30,6 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -38,6 +41,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.ElapsedTime.Resolution;
 
 
 /**
@@ -53,9 +57,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode2", group="Linear Opmode")
+@Autonomous(name="Basic: Linear OpMode3", group="Linear Opmode")
 
-public class SecondTry extends LinearOpMode {
+public class Auto2 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -66,14 +70,75 @@ public class SecondTry extends LinearOpMode {
     private Servo shooterServo = null;
     private DcMotor intakeDrive = null;
     private DcMotorEx shooterDrive = null;
-
+    private int singleStep =1;
+    
+    
+    private final int STATE_RUN_FORWARD1 = 0;
+    private final int STATE_RUN_SHOOT3_A = 1;
+    private final int STATE_RUN_SHOOT3_B = 2;
+    private final int STATE_RUN_INTAKE =   3;
+    private final int STATE_RUN_SHOOT1_A = 4;
+    private final int STATE_RUN_SHOOT1_B = 5;
+    private final int STATE_RUN_FORWARD2 = 6;
+    private final int STATE_STOP         = 7;
+    
+    public void waitFor(int ms){
+        telemetry.addData("waiting ", ms);
+            telemetry.update();
+            
+        ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+         while(timer.milliseconds()< ms){
+                opModeIsActive();
+            }
+            telemetry.addData("done",ms);
+            telemetry.update();
+    }
+    public void shoot(int howMany){
+        while(howMany > 0){
+            telemetry.addData("shooting ", howMany);
+            telemetry.update();
+            
+            shooterServo.setPosition(.9);
+            waitFor(500);
+            shooterServo.setPosition(.2);
+            waitFor(500);
+            howMany--;
+        }
+    }
+    public void driveTo(int left, int right, double speed){
+            leftDrive.setTargetPosition(left);
+            rightDrive.setTargetPosition(right);
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed);
+            while(opModeIsActive() && leftDrive.isBusy()){
+                telemetry.addData("driveTo ", leftDrive.getCurrentPosition());
+                telemetry.addData("driveTo ", rightDrive.getCurrentPosition());
+                telemetry.update();
+            }
+    }
+    public void moveArmTo(int position, double speed)
+    {
+        armDrive.setTargetPosition(position);
+        armDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armDrive.setPower(speed);
+            while(opModeIsActive() && armDrive.isBusy()){
+                telemetry.addData("driveTo ", armDrive.getCurrentPosition());
+                telemetry.update();
+            }
+    }
     @Override
     public void runOpMode() {
+        
+        int mState = STATE_RUN_FORWARD1;
         boolean goFast = true;
         boolean buttonDown = false;
         boolean goFast2 = true;
         boolean buttonDown2 = false;
         double setShooterSpeed=0;
+        int count = 0;
+        boolean firstTimeInStop = true;
         
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -94,8 +159,19 @@ public class SecondTry extends LinearOpMode {
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
+        
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        
+        shooterServo.setPosition(.2);
+        armServo.setPosition(0);
+        
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -107,88 +183,71 @@ public class SecondTry extends LinearOpMode {
             double leftPower;
             double rightPower;
             double armPower;
-
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            //leftPower  = -gamepad1.left_stick_y ;
-            //rightPower = -gamepad1.right_stick_y ;
             
+            int targetMode = 1;
             
-            if (false == goFast){
-                leftPower/=2;
-                rightPower/=2;
-            }
+            //read camera
             
-           if (true == gamepad1.right_stick_button){
-               buttonDown = true;
-            }
-            else{
-                if (true == buttonDown){
-                    if(true == goFast){
-                        goFast=false;
-                    }
-                    else{
-                        goFast = true;
-                    }
-                    buttonDown = false;
-                }
-            }
-           //Arm
-           armPower = -gamepad2.right_stick_y /2;
-           if (gamepad2.left_trigger >= 0.2){
-                armServo.setPosition(.8);
-            }
-            else{
-                 armServo.setPosition(0);
-            }
-            //shooter
+            shooterDrive.setVelocity(-200,AngleUnit.DEGREES);
+    
+            driveTo(800,800,0.4);
             
-            if (gamepad1.right_bumper ==true){
-                shooterServo.setPosition(.9);
-            }
-            else{
-                shooterServo.setPosition(.2);
-            }
+            waitFor(6000);
+            shoot(3);
             
-            shooterDrive.setVelocity(setShooterSpeed,AngleUnit.DEGREES);
-            if (true == gamepad1.a){
-                setShooterSpeed = -195;
-            }
-            if(true==gamepad1.b){
-                setShooterSpeed = 0;
-            }
-            //intake
-            if (gamepad1.left_trigger >= 0.2){
+            switch(targetMode){
+                case 1:     //Target A
+                    driveTo(3400,3400,.4);
+                    driveTo(4050,2650,.4);
+                    driveTo(3950,2450,.4);
+                    moveArmTo(-2250, .3);
+                    armServo.setPosition(.8);
+                    waitFor(1000);
+                    driveTo(4050,2650,.4);
+                break;
+                case 2:     //Target B
                 intakeDrive.setPower(1);
-            }
-            if (gamepad1.right_trigger >= 0.2){
-                intakeDrive.setPower(-1);
-            }
-             if (gamepad1.left_bumper == true){
+                waitFor(250);
+                driveTo(913, 794,.4);
+                driveTo(2239,1947,.4);
+                waitFor(2000);
                 intakeDrive.setPower(0);
+                shoot(1);
+                driveTo(4921, 4634,.4); 
+                driveTo(5500, 4100,.4);
+                driveTo(5000, 3600,.4);
+                moveArmTo(-2250, .3);
+                armServo.setPosition(.8);
+                waitFor(500);
+                driveTo(5361, 4239,.4);
+                driveTo(4837, 4784,.4);
+                driveTo(3100, 3100,.4);
+                
+                    //turn on intake
+                    //drive to 2500
+                    //turn 2800 2200
+                    //shoot 1 powershot
+                    //turn 3100 1700
+                    //drive 5300 3900
+                    //turn 6000 3100
+                    //drive 4600 1800
+                    //release wobble goal
+                    //drive 4750 1950
+                    //move arm to 0
+                    //turn 6000 1100
+                    //drive 6600 1800
+                    
+                    
+                break;
+                
             }
             
-            // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            armDrive.setPower(armPower);
-           
-
-            // Show the elapsed game time and wheel power.
-            double shooterSpeed = shooterDrive.getVelocity();
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "shooter (%.2f), right (%.2f)", shooterSpeed, rightPower);
+            
+            telemetry.addData("driveTo ", leftDrive.getCurrentPosition());
+            telemetry.addData("driveTo ", rightDrive.getCurrentPosition());
             telemetry.update();
+            return;
         }
     }
+    
 }

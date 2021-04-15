@@ -53,9 +53,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode2", group="Linear Opmode")
+@TeleOp(name="TestDrive", group="Linear Opmode")
 
-public class SecondTry extends LinearOpMode {
+public class TestDrive extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -93,6 +93,13 @@ public class SecondTry extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        
+        armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
         
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -188,7 +195,11 @@ public class SecondTry extends LinearOpMode {
             double shooterSpeed = shooterDrive.getVelocity();
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "shooter (%.2f), right (%.2f)", shooterSpeed, rightPower);
+            telemetry.addData("left", leftDrive.getCurrentPosition());
+            telemetry.addData("right", rightDrive.getCurrentPosition());
+            telemetry.addData("arm", armDrive.getCurrentPosition());
             telemetry.update();
         }
     }
 }
+
