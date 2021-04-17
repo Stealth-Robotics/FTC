@@ -60,7 +60,7 @@ import org.firstinspires.ftc.teamcode.RingWebCam;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Basic: Linear OpMode3", group="Linear Opmode")
+@Autonomous(name="Auto2", group="Linear Opmode")
 
 public class Auto2 extends LinearOpMode {
 
@@ -92,7 +92,7 @@ public class Auto2 extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
          while(timer.milliseconds()< ms){
                 if(!opModeIsActive()) return;
-                telemetry.addData("shooter",shooterDrive.getVelocity(AngleUnit.DEGREES));
+                telemetry.addData("shooter",shooterDrive.getVelocity(AngleUnit.RADIANS));
                 telemetry.update();
             }
             telemetry.addData("done",ms);
@@ -104,9 +104,9 @@ public class Auto2 extends LinearOpMode {
             telemetry.update();
             
             shooterServo.setPosition(.9);
-            waitFor(500);
+            waitFor(300);
             shooterServo.setPosition(.2);
-            waitFor(500);
+            waitFor(300);
             howMany--;
         }
     }
@@ -228,54 +228,47 @@ public class Auto2 extends LinearOpMode {
             
             int targetMode = lastReconizedLocation.mDetected;
             
-           shooterDrive.setVelocity(-190,AngleUnit.DEGREES);
+            shooterDrive.setVelocity(-210,AngleUnit.DEGREES);
     
             driveTo(800,800,0.4);
             
-            waitFor(6000);
+            waitFor(2000);
             shoot(3);
             
             switch(targetMode){
                 case RingLocation.TARGET_ZERO_RINGS:     //Target A
-                    driveTo(3400,3400,.4);
-                    driveTo(4050,2650,.4);
-                    driveTo(3950,2450,.4);
-                    moveArmTo(-2250, .3);
+                    driveTo(3400,3400,.4); //go forward
+                    driveTo(4050,2650,.4); //turn right
+                    driveTo(3950,2450,.4); //back up while turning slightly
+                    moveArmTo(-2250, .3); //drop wobble
                     armServo.setPosition(.8);
                     waitFor(1000);
-                    driveTo(4050,2650,.4);
+                    driveTo(4050,2650,.4); //go forward slightly to not touch wobble
+                    
+                    //can add second wobble later
                 break;
                 case RingLocation.TARGET_ONE_RING:     //Target B
                     intakeDrive.setPower(1);
-                    waitFor(250);
-                    driveTo(913, 794,.4);
-                    driveTo(2239,1947,.4);
-                    waitFor(2000);
-                    intakeDrive.setPower(0);
+                    
+                    waitFor(500);
+                    driveTo(913, 794,.4); //pick up ring
+                    driveTo(2239,1947,.4); //drive to powershots
+                    
+                    shooterDrive.setVelocity(-183,AngleUnit.DEGREES);
+                    waitFor(3000);
                     shoot(1);
-                    driveTo(4921, 4634,.4); 
-                    driveTo(5500, 4100,.4);
-                    driveTo(5000, 3600,.4);
-                    moveArmTo(-2250, .3);
+                    intakeDrive.setPower(0);
+                    
+                    driveTo(4921, 4634,.4); //go forward
+                    driveTo(5500, 4100,.4); //turn right
+                    driveTo(5100, 3700,.4); //back up
+                    moveArmTo(-2250, .3); 
                     armServo.setPosition(.8);
                     waitFor(500);
-                    driveTo(5361, 4239,.4);
-                    driveTo(4837, 4784,.4);
-                    driveTo(3100, 3100,.4);
+                    driveTo(5361, 4239,.4); //forward and left slightly
+                    driveTo(4837, 4784,.4); //turn left
+                    driveTo(2800, 2800,.4); //back up while turning slightly
                 
-                    //turn on intake
-                    //drive to 2500
-                    //turn 2800 2200
-                    //shoot 1 powershot
-                    //turn 3100 1700
-                    //drive 5300 3900
-                    //turn 6000 3100
-                    //drive 4600 1800
-                    //release wobble goal
-                    //drive 4750 1950
-                    //move arm to 0
-                    //turn 6000 1100
-                    //drive 6600 1800
                     
                     
                 break;
