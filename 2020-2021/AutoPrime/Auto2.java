@@ -288,8 +288,11 @@ public class Auto2 extends LinearOpMode {
                     shoot(2); //shoot more then expected in case 
                     intakeDrive.setPower(0); //intake is no longer necessary
                     driveTo(3700,1300,.4); //turn
-                    driveTo(1500,-900,.4); //back up to wobble drop area
-                    driveTo(3300,1000,.4); //forward to park on line
+                    driveTo(1250,-1160,.4); //back up to wobble drop area
+                    moveArmTo(-2250, .3); //drop wobble goal
+                    armServo.setPosition(.8);
+                    waitFor(500);
+                    driveTo(3150,850,.4); //forward to park on line
                 break;
             }
             
