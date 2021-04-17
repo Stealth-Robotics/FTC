@@ -250,7 +250,7 @@ public class Auto2 extends LinearOpMode {
                 case RingLocation.TARGET_ONE_RING:     //Target B
                     intakeDrive.setPower(1);
                     
-                    waitFor(500);
+                    waitFor(300);
                     driveTo(913, 794,.4); //pick up ring
                     driveTo(2239,1947,.4); //drive to powershots
                     
@@ -273,7 +273,19 @@ public class Auto2 extends LinearOpMode {
                     
                 break;
                 case RingLocation.TARGET_FOUR_RINGS:
-                
+                    intakeDrive.setPower(1);
+                    
+                    waitFor(300); //let intake get up to speed
+                    driveTo(875, 800,.4); //turn a little
+                    driveTo(2000, 1925,.2); //go forward to pick up rings
+                    driveTo(1950, 1975,.2); //turn to goals
+                    waitFor(750); //wait is so we can load the rings
+                    shoot(3);
+                    driveTo(2525, 2550,.4); //go forward for last ring
+                    waitFor(1500); //let last ring finish intaking
+                    shoot(2);
+                    intakeDrive.setPower(0);
+                break;
             }
             
             
