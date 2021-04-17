@@ -43,6 +43,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.ElapsedTime.Resolution;
+import org.firstinspires.ftc.teamcode.RingLocation;
+import org.firstinspires.ftc.teamcode.RingWebCam;
 
 
 /**
@@ -72,7 +74,7 @@ public class Auto2 extends LinearOpMode {
     private DcMotor intakeDrive = null;
     private DcMotorEx shooterDrive = null;
     private int singleStep =1;
-    
+    private RingWebCam ringWebCam;
     
     private final int STATE_RUN_FORWARD1 = 0;
     private final int STATE_RUN_SHOOT3_A = 1;
@@ -180,6 +182,38 @@ public class Auto2 extends LinearOpMode {
         shooterServo.setPosition(.2);
         armServo.setPosition(0);
         
+        /////////////////////////////////////////////////
+        /// Camera
+        /////////////////////////////////////////////////
+        
+        RingLocation lastReconizedLocation = new RingLocation();
+        
+        ringWebCam = new RingWebCam();
+        ringWebCam.setHardwareMap(hardwareMap);
+        ringWebCam.init();    
+        
+        while(false == isStarted()) {
+            RingLocation location = ringWebCam.findStack(telemetry);
+            if(0 != location.mDetected)
+            {
+                lastReconizedLocation = location;
+                runtime.reset();
+            }
+            else
+            {
+                if(runtime.milliseconds() > 500)
+                {
+                    lastReconizedLocation = new RingLocation();
+                }
+            }
+            telemetry.addData("stack", String.format("%d", lastReconizedLocation.mDetected));
+            telemetry.update();
+        } 
+        
+        /////////////////////////////////////////////////
+        /// Camera End
+        /////////////////////////////////////////////////
+        
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -192,9 +226,7 @@ public class Auto2 extends LinearOpMode {
             double rightPower;
             double armPower;
             
-            int targetMode = 1;
-            
-            //read camera
+            int targetMode = lastReconizedLocation.mDetected;
             
            shooterDrive.setVelocity(-190,AngleUnit.DEGREES);
     
@@ -204,7 +236,7 @@ public class Auto2 extends LinearOpMode {
             shoot(3);
             
             switch(targetMode){
-                case 1:     //Target A
+                case RingLocation.TARGET_ZERO_RINGS:     //Target A
                     driveTo(3400,3400,.4);
                     driveTo(4050,2650,.4);
                     driveTo(3950,2450,.4);
@@ -213,23 +245,23 @@ public class Auto2 extends LinearOpMode {
                     waitFor(1000);
                     driveTo(4050,2650,.4);
                 break;
-                case 2:     //Target B
-                intakeDrive.setPower(1);
-                waitFor(250);
-                driveTo(913, 794,.4);
-                driveTo(2239,1947,.4);
-                waitFor(2000);
-                intakeDrive.setPower(0);
-                shoot(1);
-                driveTo(4921, 4634,.4); 
-                driveTo(5500, 4100,.4);
-                driveTo(5000, 3600,.4);
-                moveArmTo(-2250, .3);
-                armServo.setPosition(.8);
-                waitFor(500);
-                driveTo(5361, 4239,.4);
-                driveTo(4837, 4784,.4);
-                driveTo(3100, 3100,.4);
+                case RingLocation.TARGET_ONE_RING:     //Target B
+                    intakeDrive.setPower(1);
+                    waitFor(250);
+                    driveTo(913, 794,.4);
+                    driveTo(2239,1947,.4);
+                    waitFor(2000);
+                    intakeDrive.setPower(0);
+                    shoot(1);
+                    driveTo(4921, 4634,.4); 
+                    driveTo(5500, 4100,.4);
+                    driveTo(5000, 3600,.4);
+                    moveArmTo(-2250, .3);
+                    armServo.setPosition(.8);
+                    waitFor(500);
+                    driveTo(5361, 4239,.4);
+                    driveTo(4837, 4784,.4);
+                    driveTo(3100, 3100,.4);
                 
                     //turn on intake
                     //drive to 2500
@@ -247,6 +279,7 @@ public class Auto2 extends LinearOpMode {
                     
                     
                 break;
+                case RingLocation.TARGET_FOUR_RINGS:
                 
             }
             
