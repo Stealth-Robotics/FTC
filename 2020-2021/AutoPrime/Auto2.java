@@ -276,15 +276,20 @@ public class Auto2 extends LinearOpMode {
                     intakeDrive.setPower(1);
                     
                     waitFor(300); //let intake get up to speed
-                    driveTo(875, 800,.4); //turn a little
-                    driveTo(2000, 1925,.2); //go forward to pick up rings
-                    driveTo(1950, 1975,.2); //turn to goals
-                    waitFor(750); //wait is so we can load the rings
+                    driveTo(885, 800,.4); //turn a little
+                    driveTo(2010, 1925,.2); //go forward to pick up rings
+                    driveTo(1955, 1975,.2); //turn to goals
+                    waitFor(875); //wait is so we can load the rings
                     shoot(3);
-                    driveTo(2525, 2550,.4); //go forward for last ring
-                    waitFor(1500); //let last ring finish intaking
-                    shoot(2);
-                    intakeDrive.setPower(0);
+                    driveTo(2010, 1925,.4); //turn back towards rings
+                    driveTo(2585, 2500,.2); //go forward to pick up more rings
+                    driveTo(2500, 2560,.2); //turn back to goal
+                    waitFor(1300); //let last ring finish intaking
+                    shoot(2); //shoot more then expected in case 
+                    intakeDrive.setPower(0); //intake is no longer necessary
+                    driveTo(3700,1300,.4); //turn
+                    driveTo(1500,-900,.4); //back up to wobble drop area
+                    driveTo(3300,1000,.4); //forward to park on line
                 break;
             }
             
