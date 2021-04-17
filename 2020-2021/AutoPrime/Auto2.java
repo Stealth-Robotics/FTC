@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -88,7 +89,9 @@ public class Auto2 extends LinearOpMode {
             
         ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
          while(timer.milliseconds()< ms){
-                opModeIsActive();
+                if(!opModeIsActive()) return;
+                telemetry.addData("shooter",shooterDrive.getVelocity(AngleUnit.DEGREES));
+                telemetry.update();
             }
             telemetry.addData("done",ms);
             telemetry.update();
@@ -169,6 +172,11 @@ public class Auto2 extends LinearOpMode {
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         
+        PIDFCoefficients cof = shooterDrive.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);        
+        cof.p = 60;        
+        cof.i = 18;        
+        shooterDrive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,cof);
+        
         shooterServo.setPosition(.2);
         armServo.setPosition(0);
         
@@ -188,7 +196,7 @@ public class Auto2 extends LinearOpMode {
             
             //read camera
             
-            shooterDrive.setVelocity(-200,AngleUnit.DEGREES);
+           shooterDrive.setVelocity(-190,AngleUnit.DEGREES);
     
             driveTo(800,800,0.4);
             
