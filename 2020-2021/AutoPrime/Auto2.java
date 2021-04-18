@@ -93,6 +93,7 @@ public class Auto2 extends LinearOpMode {
          while(timer.milliseconds()< ms){
                 if(!opModeIsActive()) return;
                 telemetry.addData("shooter",shooterDrive.getVelocity(AngleUnit.RADIANS));
+                telemetry.addData("driveTo ", armDrive.getCurrentPosition());
                 telemetry.update();
             }
             telemetry.addData("done",ms);
@@ -166,6 +167,7 @@ public class Auto2 extends LinearOpMode {
         
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -252,22 +254,22 @@ public class Auto2 extends LinearOpMode {
                     
                     waitFor(300);
                     driveTo(913, 794,.4); //pick up ring
-                    driveTo(2239,1947,.4); //drive to powershots
-                    
-                    shooterDrive.setVelocity(-183,AngleUnit.DEGREES);
-                    waitFor(3000);
-                    shoot(1);
+                    driveTo(2239,1947,.4); //drive to second shooting location
+                    driveTo(2039,2147,.4); //turn to face goals
+                    waitFor(1000);
+                    shoot(2);
                     intakeDrive.setPower(0);
+                    driveTo(2239,1947,.4); //go back to previous orientation
                     
                     driveTo(4921, 4634,.4); //go forward
                     driveTo(5500, 4100,.4); //turn right
-                    driveTo(5100, 3700,.4); //back up
+                    driveTo(4500, 3100,.4); //back up
                     moveArmTo(-2250, .3); 
                     armServo.setPosition(.8);
                     waitFor(500);
                     driveTo(5361, 4239,.4); //forward and left slightly
                     driveTo(4837, 4784,.4); //turn left
-                    driveTo(2800, 2800,.4); //back up while turning slightly
+                    driveTo(3000, 3000,.4); //back up while turning slightly
                 
                     
                     
