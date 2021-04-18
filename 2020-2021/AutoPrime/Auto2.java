@@ -283,16 +283,16 @@ public class Auto2 extends LinearOpMode {
                     shoot(3);
                     driveTo(2010, 1925,.4); //turn back towards rings
                     driveTo(2585, 2500,.2); //go forward to pick up more rings
-                    driveTo(2500, 2560,.2); //turn back to goal
+                    driveTo(2500, 2560,.2); //turn front to aim at goal
                     waitFor(1300); //let last ring finish intaking
                     shoot(2); //shoot more then expected in case 
                     intakeDrive.setPower(0); //intake is no longer necessary
-                    driveTo(3700,1300,.4); //turn
-                    driveTo(1250,-1160,.4); //back up to wobble drop area
+                    driveTo(3750,1250,.4); //turn back to goal
+                    driveTo(1150,-1350,.4); //back up to wobble drop area
                     moveArmTo(-2250, .3); //drop wobble goal
                     armServo.setPosition(.8);
                     waitFor(500);
-                    driveTo(3150,850,.4); //forward to park on line
+                    driveTo(2750,250,.4); //forward to park on line
                 break;
             }
             
