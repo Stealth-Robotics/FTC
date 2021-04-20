@@ -238,16 +238,24 @@ public class Auto2 extends LinearOpMode {
             shoot(3);
             
             switch(targetMode){
-                case RingLocation.TARGET_ZERO_RINGS:     //Target A
+                case RingLocation.TARGET_ZERO_RINGS:     //Target A. Second wobble goal scoring currently in progress
                     driveTo(3400,3400,.4); //go forward
                     driveTo(4050,2650,.4); //turn right
                     driveTo(3950,2450,.4); //back up while turning slightly
+                    driveTo(3850,2350,.4); //back up a little farther
                     moveArmTo(-2250, .3); //drop wobble
                     armServo.setPosition(.8);
                     waitFor(1000);
-                    driveTo(4050,2650,.4); //go forward slightly to not touch wobble
                     
-                    //can add second wobble later
+                    driveTo(4550,3050,.4); //go forward, away from wobble
+                    driveTo(3500,3350,.4); //turn to face 2nd wobble
+                    driveTo(1500,1350,.4); //go to second wobble
+                    //armServo.setPosition(0);
+                    //waitFor(500);
+                    //moveArmTo(0, .3); //bring back up
+
+                    
+                    
                 break;
                 case RingLocation.TARGET_ONE_RING:     //Target B
                     intakeDrive.setPower(1);
