@@ -246,10 +246,10 @@ public class Auto2 extends LinearOpMode {
                     moveArmTo(-2250, .3); //drop wobble
                     armServo.setPosition(.8);
                     waitFor(1000);
+                    driveTo(4050,2650,.4); //go forward, park on the line
                     
-                    driveTo(4550,3050,.4); //go forward, away from wobble
-                    driveTo(3500,3350,.4); //turn to face 2nd wobble
-                    driveTo(1500,1350,.4); //go to second wobble
+                    //driveTo(3500,3350,.4); //turn to face 2nd wobble
+                    //driveTo(1500,1350,.4); //go to second wobble
                     //armServo.setPosition(0);
                     //waitFor(500);
                     //moveArmTo(0, .3); //bring back up
@@ -271,10 +271,10 @@ public class Auto2 extends LinearOpMode {
                     
                     driveTo(4921, 4634,.4); //go forward
                     driveTo(5500, 4100,.4); //turn right
-                    driveTo(4500, 3100,.4); //back up
+                    driveTo(4000, 2600,.4); //back up
                     moveArmTo(-2250, .3); 
                     armServo.setPosition(.8);
-                    waitFor(500);
+                    waitFor(1000);
                     driveTo(5361, 4239,.4); //forward and left slightly
                     driveTo(4837, 4784,.4); //turn left
                     driveTo(3000, 3000,.4); //back up while turning slightly
@@ -291,14 +291,16 @@ public class Auto2 extends LinearOpMode {
                     driveTo(1955, 1975,.2); //turn to goals
                     waitFor(875); //wait is so we can load the rings
                     shoot(3);
+                    
                     driveTo(2010, 1925,.4); //turn back towards rings
+                    driveTo(1960,1875,.4);//back up 
                     driveTo(2585, 2500,.2); //go forward to pick up more rings
                     driveTo(2500, 2560,.2); //turn front to aim at goal
                     waitFor(1300); //let last ring finish intaking
                     shoot(2); //shoot more then expected in case 
                     intakeDrive.setPower(0); //intake is no longer necessary
-                    driveTo(3750,1250,.4); //turn back to goal
-                    driveTo(1150,-1350,.4); //back up to wobble drop area
+                    driveTo(3500,1560,.4); //turn back to goal
+                    driveTo(1050,-600,.4); //back up to wobble drop area
                     moveArmTo(-2250, .3); //drop wobble goal
                     armServo.setPosition(.8);
                     waitFor(500);
