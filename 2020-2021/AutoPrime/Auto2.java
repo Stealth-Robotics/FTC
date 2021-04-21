@@ -105,9 +105,9 @@ public class Auto2 extends LinearOpMode {
             telemetry.update();
             
             shooterServo.setPosition(.9);
-            waitFor(300);
+            waitFor(500);
             shooterServo.setPosition(.2);
-            waitFor(300);
+            waitFor(500);
             howMany--;
         }
     }
@@ -177,7 +177,7 @@ public class Auto2 extends LinearOpMode {
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         
         PIDFCoefficients cof = shooterDrive.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);        
-        cof.p = 60;        
+        cof.p = 70;        
         cof.i = 18;        
         shooterDrive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,cof);
         
@@ -243,7 +243,7 @@ public class Auto2 extends LinearOpMode {
                     driveTo(4050,2650,.4); //turn right
                     driveTo(3950,2450,.4); //back up while turning slightly
                     driveTo(3850,2350,.4); //back up a little farther
-                    moveArmTo(-2250, .3); //drop wobble
+                    moveArmTo(-2400, .3); //drop wobble
                     armServo.setPosition(.8);
                     waitFor(1000);
                     driveTo(4050,2650,.4); //go forward, park on the line
@@ -272,7 +272,7 @@ public class Auto2 extends LinearOpMode {
                     driveTo(4921, 4634,.4); //go forward
                     driveTo(5500, 4100,.4); //turn right
                     driveTo(4000, 2600,.4); //back up
-                    moveArmTo(-2250, .3); 
+                    moveArmTo(-2400, .3); 
                     armServo.setPosition(.8);
                     waitFor(1000);
                     driveTo(5361, 4239,.4); //forward and left slightly
@@ -287,7 +287,7 @@ public class Auto2 extends LinearOpMode {
                     
                     waitFor(300); //let intake get up to speed
                     driveTo(885, 800,.4); //turn a little
-                    driveTo(2010, 1925,.2); //go forward to pick up rings
+                    driveTo(1960, 1875,.2); //go forward to pick up rings
                     driveTo(1955, 1975,.2); //turn to goals
                     waitFor(875); //wait is so we can load the rings
                     shoot(3);
@@ -297,11 +297,12 @@ public class Auto2 extends LinearOpMode {
                     driveTo(2585, 2500,.2); //go forward to pick up more rings
                     driveTo(2500, 2560,.2); //turn front to aim at goal
                     waitFor(1300); //let last ring finish intaking
-                    shoot(2); //shoot more then expected in case 
+                    shoot(3); //shoot more then expected in case 
                     intakeDrive.setPower(0); //intake is no longer necessary
-                    driveTo(3500,1560,.4); //turn back to goal
-                    driveTo(1050,-600,.4); //back up to wobble drop area
-                    moveArmTo(-2250, .3); //drop wobble goal
+                    driveTo(3600,1300,.4); //turn back to goal 3350 1600
+                    driveTo(1150,-1150,.4); //back up to wobble drop area
+                    
+                    moveArmTo(-2400, .3); //drop wobble goal
                     armServo.setPosition(.8);
                     waitFor(500);
                     driveTo(2750,250,.4); //forward to park on line
