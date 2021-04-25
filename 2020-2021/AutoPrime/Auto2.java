@@ -118,7 +118,7 @@ public class Auto2 extends LinearOpMode {
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftDrive.setPower(speed);
             rightDrive.setPower(speed);
-            while(opModeIsActive() && leftDrive.isBusy()){
+            while(opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy()){
                 telemetry.addData("driveTo ", leftDrive.getCurrentPosition());
                 telemetry.addData("driveTo ", rightDrive.getCurrentPosition());
                 telemetry.update();
@@ -240,7 +240,7 @@ public class Auto2 extends LinearOpMode {
             switch(targetMode){
                 case RingLocation.TARGET_ZERO_RINGS:     //Target A. Second wobble goal scoring currently in progress
                     driveTo(3400,3400,.4); //go forward
-                    driveTo(4050,2650,.4); //turn right
+                    driveTo(4050,2650,.4); //turn right 750
                     driveTo(3950,2450,.4); //back up while turning slightly
                     driveTo(3850,2350,.4); //back up a little farther
                     moveArmTo(-2400, .3); //drop wobble
@@ -261,26 +261,20 @@ public class Auto2 extends LinearOpMode {
                     intakeDrive.setPower(1);
                     
                     waitFor(300);
-                    driveTo(913, 794,.4); //pick up ring
-                    driveTo(2239,1947,.4); //drive to second shooting location
-                    driveTo(2039,2147,.4); //turn to face goals
+                    driveTo(913, 794,.4); // turn to pick up ring
+                    driveTo(2239,1947,.4); //drive to second shooting location while intaking
+                    driveTo(1950,2150,.4); //turn to face goals
                     waitFor(1000);
                     shoot(2);
-                    intakeDrive.setPower(0);
-                    driveTo(2239,1947,.4); //go back to previous orientation
-                    
-                    driveTo(4921, 4634,.4); //go forward
-                    driveTo(5500, 4100,.4); //turn right
-                    driveTo(4000, 2600,.4); //back up
+                    intakeDrive.setPower(0); // no longer needed
+                    driveTo(2050, 2050,.4);
+                    driveTo(3600, 3600,.4); //go forward to the square ready drop of wobble(5039, 5147) 
+                    driveTo(1800, 5400,.4); //180 turn
                     moveArmTo(-2400, .3); 
                     armServo.setPosition(.8);
                     waitFor(1000);
-                    driveTo(5361, 4239,.4); //forward and left slightly
-                    driveTo(4837, 4784,.4); //turn left
-                    driveTo(3000, 3000,.4); //back up while turning slightly
-                
-                    
-                    
+                    driveTo(2000, 5600,.4); // drive to line
+                    // shooter angle 6 1/8
                 break;
                 case RingLocation.TARGET_FOUR_RINGS:
                     intakeDrive.setPower(1);

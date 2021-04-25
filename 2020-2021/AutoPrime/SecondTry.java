@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -96,6 +97,12 @@ public class SecondTry extends LinearOpMode {
         
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        
+        PIDFCoefficients cof = shooterDrive.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        cof.p = 70;
+        cof.i = 18;
+        shooterDrive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,cof);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -162,7 +169,7 @@ public class SecondTry extends LinearOpMode {
             
             shooterDrive.setVelocity(setShooterSpeed,AngleUnit.DEGREES);
             if (true == gamepad1.a){
-                setShooterSpeed = -195;
+                setShooterSpeed = -230;
             }
             if(true==gamepad1.b){
                 setShooterSpeed = 0;
