@@ -253,7 +253,7 @@ public class Auto3 extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         
-        while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), 1) != 0))
+        while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), .5) != 0))
         {
             iError = clampedKValue(iError + currentError,Ki);
             iTerm = absMax(iError * Ki,1.0);
@@ -488,22 +488,37 @@ public class Auto3 extends LinearOpMode {
             shooterDrive.setVelocity(-210,AngleUnit.DEGREES);
     
             driveForward(800,.4);
-            
-            
             waitFor(2000);
             shoot(3);
             
             switch(targetMode){
                 case RingLocation.TARGET_ZERO_RINGS:     //Target A. Second wobble goal scoring currently in progress
-                    driveForward(2600,0.4);             // driveTo(3400,3400,.4); //go forward
-                    rotateRight(90.0,0.3);              // driveTo(4050,2650,.4); //turn right 750
+                    driveForward(2600,0.6);             // driveTo(3400,3400,.4); //go forward
+                    rotateRight(87.0,0.3);              // driveTo(4050,2650,.4); //turn right 750
                     driveReverse(400,0.4);              // driveTo(3950,2450,.4); //back up while turning slightly
                                                         // driveTo(3850,2350,.4); //back up a little farther
                     moveArmTo(-2400, .3); //drop wobble
                     armServo.setPosition(.8);
-                    waitFor(1000);
-                    driveForward(300,0.4);               // driveTo(4050,2650,.4); //go forward, park on the line
+                    waitFor(400);
                     
+                    driveForward(540,0.5);               // driveTo(4050,2650,.4); //go forward, park on the line
+                    rotateLeft(86.0,0.3); // rotete to get ready to reverse to get the other wobble
+                    driveReverse(2225,0.6); 
+                   
+                     
+                    armServo.setPosition(0);//pick up wobble
+                    waitFor(400);
+                    moveArmTo(-1100, .3);
+                    
+                    
+                    driveForward(1900,0.5); 
+                    rotateRight(87.0,0.3);   
+                    driveReverse(610,0.4); 
+                    
+                    moveArmTo(-1800, .3); //drop wobble
+                    armServo.setPosition(.8);
+                    driveForward(400,0.4);
+                     
                     //driveTo(3500,3350,.4); //turn to face 2nd wobble
                     //driveTo(1500,1350,.4); //go to second wobble
                     //armServo.setPosition(0);
@@ -520,11 +535,12 @@ public class Auto3 extends LinearOpMode {
                     rotateRight(10,.3);                              //  driveTo(913, 794,.4); // turn to pick up ring
                     driveForward(1300,.4);                          //driveTo(2239,1947,.4); //drive to second shooting location while intaking
                     rotateLeft(10,0.3);                             // driveTo(1950,2150,.4); //turn to face goals
+                    driveReverse(1000,.4); 
                     waitFor(2500);
                     shoot(1);
                     
                     //rotateRight(5,0.3);                             // driveTo(2050, 2050,.4);
-                    driveForward(1700,.4);                          // driveTo(3600, 3600,.4); //go forward to the square ready drop of wobble(5039, 5147) 
+                    driveForward(2700,.4);                          // driveTo(3600, 3600,.4); //go forward to the square ready drop of wobble(5039, 5147) 
                     rotateRight(175,.4);                            // driveTo(1800, 5400,.4); //180 turn
                     moveArmTo(-2400, .3); 
                     armServo.setPosition(.8);
@@ -541,12 +557,13 @@ public class Auto3 extends LinearOpMode {
                     rotateRight(5,.3);                              // driveTo(885, 800,.4); //turn a little
                     driveForward(1200,.4);                          // driveTo(1960, 1875,.5); //go forward to pick up rings
                     rotateLeft(5,.3);                               // driveTo(1675, 2125,.4); //turn to goals
+                    
                     waitFor(2000); //wait is so we can load the rings
                     shoot(3);
                     rotateRight(5,.3);                              // driveTo(1725, 2075,.4); //turn back towards rings
                     driveReverse(75,.4);                            // driveTo(1600,2000,.4);//back up 
                     driveForward(400,.4);                           // driveTo(2100, 2500,.4); //go forward to pick up more rings
-                    rotateLeft(5,.3);                               // driveTo(2025, 2575,.4); //turn front to aim at goal
+                    rotateLeft(6,.3);                               // driveTo(2025, 2575,.4); //turn front to aim at goal
                     waitFor(2000); //let last ring finish intaking
                                                                      // Experimental backup driveTo(1625,2175,.4);
                     shoot(3); //shoot more then expected in case 
