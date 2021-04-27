@@ -253,7 +253,7 @@ public class Auto3 extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         
-        while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), 0.2) != 0))
+        while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), 1) != 0))
         {
             iError = clampedKValue(iError + currentError,Ki);
             iTerm = absMax(iError * Ki,1.0);
@@ -519,13 +519,13 @@ public class Auto3 extends LinearOpMode {
                     waitFor(300);
                     rotateRight(10,.3);                              //  driveTo(913, 794,.4); // turn to pick up ring
                     driveForward(1300,.4);                          //driveTo(2239,1947,.4); //drive to second shooting location while intaking
-                    rotateLeft(10,0.4);                             // driveTo(1950,2150,.4); //turn to face goals
+                    rotateLeft(10,0.3);                             // driveTo(1950,2150,.4); //turn to face goals
                     waitFor(2500);
                     shoot(1);
                     
                     //rotateRight(5,0.3);                             // driveTo(2050, 2050,.4);
                     driveForward(1700,.4);                          // driveTo(3600, 3600,.4); //go forward to the square ready drop of wobble(5039, 5147) 
-                    rotateRight(170,.4);                            // driveTo(1800, 5400,.4); //180 turn
+                    rotateRight(175,.4);                            // driveTo(1800, 5400,.4); //180 turn
                     moveArmTo(-2400, .3); 
                     armServo.setPosition(.8);
                     waitFor(1000);
@@ -547,7 +547,7 @@ public class Auto3 extends LinearOpMode {
                     driveReverse(75,.4);                            // driveTo(1600,2000,.4);//back up 
                     driveForward(400,.4);                           // driveTo(2100, 2500,.4); //go forward to pick up more rings
                     rotateLeft(5,.3);                               // driveTo(2025, 2575,.4); //turn front to aim at goal
-                    waitFor(600); //let last ring finish intaking
+                    waitFor(2000); //let last ring finish intaking
                                                                      // Experimental backup driveTo(1625,2175,.4);
                     shoot(3); //shoot more then expected in case 
                     rotateRight(155,.3);
