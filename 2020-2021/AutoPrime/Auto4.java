@@ -68,9 +68,9 @@ import org.firstinspires.ftc.teamcode.RingWebCam;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto3", group="Linear Opmode")
+@Autonomous(name="Kevins Auto4", group="Linear Opmode")
 
-public class Auto3 extends LinearOpMode {
+public class Auto4 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -139,11 +139,11 @@ public class Auto3 extends LinearOpMode {
     }
     public void rotateLeft(double angle, double speed)
     {
-        PIDRotate(angle,speed);
+        PIDRotate(angle,speed,1);
     }
     public void rotateRight(double angle,double speed)
     {
-        PIDRotate(-angle,speed);
+        PIDRotate(-angle,speed,-1);
     }
     public void turnLeft(int distance, double speed)
     {
@@ -238,25 +238,25 @@ public class Auto3 extends LinearOpMode {
         if(value >= 0) return (value < absMax)?value:absMax;
         return (value<=-absMax)?-absMax:value;
     }
-    private void PIDRotate(double degrees, double maxpower)
+    private void PIDRotate(double degrees, double maxpower,int direction)
     {
         // Establish constants.
         double Kp = .005;
         double Ki = .01;
         double basePower = .19;   // Minimum power for turn determined experimentally
+        double iError = 0;
         double leftPower, rightPower;
         double currentError;
         double newOutput;
         double iTerm,pTerm;
-        double iError = 0;
         
-        resetAngle();
+        //resetAngle();
         // Stop using the encoders
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         int count = 0;
         
-   while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), .3) != 0))
+        while(opModeIsActive() && (deadBand((currentError = degrees - getAngle()), .3) != 0))
         {
             pTerm = absMax(currentError * Kp,1.0); 
             if (Math.abs(pTerm)>=.2){
@@ -301,6 +301,7 @@ public class Auto3 extends LinearOpMode {
        telemetry.addData("final globalAngle",getAngle());
        telemetry.update();
         // waitFor(1000);
+
     }
     private void rotateTo(double degrees, double power)
     {
@@ -474,11 +475,27 @@ public class Auto3 extends LinearOpMode {
         // Start the logging of measured acceleration
         //imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-  /*
+   /*  
         // Let's do just some turning tests.
-        rotateLeft(160.0,.3);
-        waitFor(2000);
-      
+        rotateLeft(45,.3);
+        waitFor(1000);
+         rotateLeft(90,.3);
+        waitFor(1000);
+        rotateLeft(190,.4);
+        waitFor(1000);
+        
+       
+        rotateLeft(180,.4);
+        waitFor(1000);
+                rotateRight(0,.3);
+        waitFor(1000);
+                rotateRight(180,.3);
+        waitFor(1000);
+                rotateRight(0,.4);
+        waitFor(1000);
+                rotateRight(180.0,.4);
+        waitFor(10000);
+    
         rotateRight(160.0,.3);
         waitFor(2000);
         rotateRight(45.0,.3);
@@ -523,7 +540,7 @@ public class Auto3 extends LinearOpMode {
                    
                      
                     armServo.setPosition(0);//pick up wobble
-                    waitFor(500);
+                    waitFor(300);
                     moveArmTo(-1100, .4);
                     
                     
