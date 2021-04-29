@@ -111,9 +111,9 @@ public class Auto3 extends LinearOpMode {
      }
     public void shoot(int howMany){
         while(howMany > 0){
-            shooterServo.setPosition(.9);
+            shooterServo.setPosition(.7);
             waitFor(300);
-            shooterServo.setPosition(.2);
+            shooterServo.setPosition(.0);
             if (--howMany >0 ){
                 waitFor(300);
             }
@@ -411,7 +411,7 @@ public class Auto3 extends LinearOpMode {
         cof.i = 18;        
         shooterDrive.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,cof);
         
-        shooterServo.setPosition(.2);
+        shooterServo.setPosition(0.0);
         armServo.setPosition(0);
         
         /////////////////////////////////////////////////
@@ -452,8 +452,8 @@ public class Auto3 extends LinearOpMode {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
+        // parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = false;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
@@ -523,7 +523,7 @@ public class Auto3 extends LinearOpMode {
                    
                      
                     armServo.setPosition(0);//pick up wobble
-                    waitFor(500);
+                    waitFor(800);
                     moveArmTo(-1100, .4);
                     
                     
@@ -552,9 +552,11 @@ public class Auto3 extends LinearOpMode {
                     rotateRight(10,.3);                              //  driveTo(913, 794,.4); // turn to pick up ring
                     driveForward(1300,.4);                          //driveTo(2239,1947,.4); //drive to second shooting location while intaking
                     rotateLeft(10,0.3);                             // driveTo(1950,2150,.4); //turn to face goals
-                    driveReverse(1000,.4); 
+                    driveReverse(1000,.4);
+                    rotateLeft(2,0.3);
                     waitFor(2500);
                     shoot(1);
+                    rotateRight(2,0.3);
                     
                     //rotateRight(5,0.3);                             // driveTo(2050, 2050,.4);
                     driveForward(2700,.4);                          // driveTo(3600, 3600,.4); //go forward to the square ready drop of wobble(5039, 5147) 
@@ -572,19 +574,19 @@ public class Auto3 extends LinearOpMode {
                     
                     waitFor(300); //let intake get up to speed
                     rotateRight(5,.3);                              // driveTo(885, 800,.4); //turn a little
-                    driveForward(1200,.4);                          // driveTo(1960, 1875,.5); //go forward to pick up rings
-                    rotateLeft(5,.3);                               // driveTo(1675, 2125,.4); //turn to goals
+                    driveForward(1000,.4);                          // driveTo(1960, 1875,.5); //go forward to pick up rings
+                    rotateLeft(7,.3);                               // driveTo(1675, 2125,.4); //turn to goals
                     
                     waitFor(2000); //wait is so we can load the rings
                     shoot(3);
-                    rotateRight(5,.3);                              // driveTo(1725, 2075,.4); //turn back towards rings
+                    rotateRight(7,.3);                              // driveTo(1725, 2075,.4); //turn back towards rings
                     driveReverse(75,.4);                            // driveTo(1600,2000,.4);//back up 
-                    driveForward(400,.4);                           // driveTo(2100, 2500,.4); //go forward to pick up more rings
-                    rotateLeft(6,.3);                               // driveTo(2025, 2575,.4); //turn front to aim at goal
+                    driveForward(600,.4);                           // driveTo(2100, 2500,.4); //go forward to pick up more rings
+                    rotateLeft(12,.3);                               // driveTo(2025, 2575,.4); //turn front to aim at goal
                     waitFor(2000); //let last ring finish intaking
                                                                      // Experimental backup driveTo(1625,2175,.4);
                     shoot(3); //shoot more then expected in case 
-                    rotateRight(155,.3);
+                    rotateRight(161,.3);
                     driveReverse(2500,.4);                          // driveTo(3600,1300,.4); //turn back to goal 3350 1600
                                                                     // driveTo(1150,-1150,.4); //back up to wobble drop area
                     intakeDrive.setPower(0); //intake is no longer necessary
